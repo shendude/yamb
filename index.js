@@ -1,4 +1,4 @@
-var freqDB = require('/db');
+var freqDB = require('db');
 
 //custom inputfilter for sherlock holmes lines of text
 //actual lines of story text is indented with 5 spaces only
@@ -7,7 +7,7 @@ var myFilter = function(string) {
 }
 
 //helper function to convert markov obj to database
-var objToDB = function(obj) {
+var objToDB = function(obj, tot) {
   
 }
 
@@ -37,17 +37,20 @@ function parseSentences(lines) {
       }
     }
   }
+  console.log(freqs);
   //FIXME
 }
 
 //reads file and call above functions to convert file
 //to markov chain database
 function readSingleFile(evt) {
+  console.log('hello');
   var f = evt.target.files[0]; 
 
   if (f) {
     var r = new FileReader();
     r.onload = function(e) { 
+      //converts lines of text to sentences
       var contents = e.target.result;
       var rows = contents.split(/\r?\n/g);
       var sentences = [];
@@ -89,4 +92,6 @@ function readSingleFile(evt) {
 }
 
 //event listener for file input
-document.getElementById('fileinput').addEventListener('change', readSingleFile, false);
+window.onload(function(){
+  document.getElementById('fileinput').addEventListener('change', readSingleFile, false);
+});

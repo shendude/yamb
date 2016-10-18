@@ -1,93 +1,20 @@
-<input type="file" id="fileinput" />
-<a id="out">OUTPUT</a>
-<script type="text/javascript">
-  //NOTE: js written with es6
-  var freqs = {'_totals':{}};
-  
-  function parseSentences(lines) {
-    //does the conversion between an array of sentences
-    //to a second order markov chain json
-    //writes it to freqs object
-    var words = [];
-    var increment = function(a, b, c) {
-      if (!freqs._totals[a + b]) {freqs._totals[a + b] = 0}
-      if (!freqs[a]) {freqs[a] = {}};
-      if (!freqs[a][b]) {freqs[a][b] = {}};
-      if (!freqs[a][b][c]) {freqs[a][b][c] = 0}
-      freqs._totals[a+b]++;
-      freqs[a][b][c]++;
-    }
-    for (var sentence of lines) {
-      words = sentence.split(' ');
-      for (var i = 0; i < words.length - 1; i++) {
-        if (i === 0) {
-          increment('_null', words[i], words[i+1]);
-        } else {
-          increment(words[i-1], words[i], words[i+1]);
-        }
-      }
-    }
-  }
-  
-  function saveText(text, filename){
-    var a = document.getElementById('out');
-    a.setAttribute('href', 'data:text/plain;charset=utf-u,'+encodeURIComponent(text));
-    a.setAttribute('download', filename);
-    a.click();
-  }
-  
-  
-  function readSingleFile(evt) {
-    //Parses sherlock holmes text to json markov chain
-    //the unique format of the text allows for easy parsing
-    //actual story text is indented with 5 spaces only
-
-    var f = evt.target.files[0]; 
-
-    if (f) {
-      var r = new FileReader();
-      r.onload = function(e) { 
-        var contents = e.target.result;
-        var rows = contents.split(/\r?\n/g);
-        var sentences = [];
-        var trailing = '';
-        var add = function(string) {
-          if (string.length + trailing.length > 40) {
-            if (trailing.length) {
-              sentences.push(trailing + string);
-              trailing = '';
-            } else {
-              sentences.push(string);
-            }
-          }
-        };
-        for (var line of rows) {
-          line = line.split('"').join('');
-          if (line.length > 5 && line[5] !== ' ') {
-            var temp = line.slice(5).split('. ');
-            for (var i = 0; i < temp.length; i++) {
-              if (i < temp.length - 1) {
-                add(temp[i] + '.');
-              } else {
-                if (temp[i].slice(-1) === '.') {
-                  add(temp[i]);
-                } else {
-                  trailing += temp[i] + ' ';
-                }
-              }
-            }
-          }
-        }
-        parseSentences(sentences);
-        saveText( JSON.stringify(freqs), "mv.json" );
-      }
-      r.readAsText(f);
-    } else { 
-      alert("Failed to load file");
-    }
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Markov Server</title>
+    <script src='./node_modules/angular/angular.js'></script>
+    <script src='./node_modules/angular-route/angular-route.js'></script>
     
-    
-  }
-
-  document.getElementById('fileinput').addEventListener('change', readSingleFile, false);
-</script>
+    <script src='./app.js'></script>
+  </head>
+  <body ng-app='app'>
+    <h1>Yet Another Markov Bot</h1>
+    <div ng-controller="appCtrl">
+      {{test}}
+      <input type="file" id="file" name="file"/>
+      <button ng-click="add()">SUBMIT</button>
+    </div>
+  </body>
+</html>
