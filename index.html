@@ -8,6 +8,7 @@
     <script src='./node_modules/angular-route/angular-route.js'></script>
     
     <script src='./app.js'></script>
+    <script src='./parser.js'></script>
   </head>
   <body ng-app='app'>
     <h1>Yet Another Markov Bot</h1>
@@ -15,6 +16,7 @@
       {{test}}
       <input type="file" id="file" name="file"/>
       <button ng-click="add()">SUBMIT</button>
+      <button ng-click="generate()">GENERATE</button>
     </div>
   </body>
 </html>

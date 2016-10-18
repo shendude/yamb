@@ -12,7 +12,7 @@ db.once('open', function() {console.log('database connected')});
 //wordSchema is the subdocument
 var wordSchema = new Schema({
   word: String,
-  freq: Number,
+  freq: Number
 });
 
 var freqSchema = new Schema({

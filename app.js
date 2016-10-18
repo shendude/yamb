@@ -5,8 +5,13 @@ angular.module('app', []).controller('appCtrl', ['$scope', function($scope) {
         r = new FileReader();
     r.onloadend = function(e){
       var data = e.target.result;
-      console.log(data);
+      var arr = parseBlob(data);
+      parseLines(arr);
     }
     r.readAsText(f);
   };
+
+  $scope.generate = function() {
+
+  }
 }]);
