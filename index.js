@@ -1,14 +1,30 @@
+var freqDB = require('/db');
+
+//custom inputfilter for sherlock holmes lines of text
+//actual lines of story text is indented with 5 spaces only
+var myFilter = function(string) {
+  return (string.length > 5 && string[5] !== ' ');
+}
+
+//helper function to convert markov obj to database
+var objToDB = function(obj) {
+  
+}
+
+//parses an array of raw text to an object
+//then to an mongodb-compatable array
 function parseSentences(lines) {
   var words = [];
-  //json obj representatoin of markov graph
-  var freqs = {'_totals':{}};
+  //obj representation of markov graph
+  var freqs = {};
+  var totals = {};
   var results = []
   var increment = function(a, b, c) {
-    if (!freqs._totals[a + b]) {freqs._totals[a + b] = 0}
+    if (!totals[a + b]) {totals[a + b] = 0}
     if (!freqs[a]) {freqs[a] = {}};
     if (!freqs[a][b]) {freqs[a][b] = {}};
     if (!freqs[a][b][c]) {freqs[a][b][c] = 0}
-    freqs._totals[a+b]++;
+    totals[a+b]++;
     freqs[a][b][c]++;
   }
   for (var sentence of lines) {
@@ -24,20 +40,9 @@ function parseSentences(lines) {
   //FIXME
 }
 
-//function saveText(text, filename){
-//  var a = document.getElementById('out');
-//  a.setAttribute('href', 'data:text/plain;charset=utf-u,'+encodeURIComponent(text));
-//  a.setAttribute('download', filename);
-//  a.click()
-//}
-//---above: functionality for producing JSON file
-
-
+//reads file and call above functions to convert file
+//to markov chain database
 function readSingleFile(evt) {
-  //Parses sherlock holmes text to json markov chain
-  //the unique format of the text allows for easy parsing
-  //actual story text is indented with 5 spaces only
-
   var f = evt.target.files[0]; 
 
   if (f) {
@@ -59,7 +64,7 @@ function readSingleFile(evt) {
       };
       for (var line of rows) {
         line = line.split('"').join('');
-        if (line.length > 5 && line[5] !== ' ') {
+        if (myFilter(line)) {
           var temp = line.slice(5).split('. ');
           for (var i = 0; i < temp.length; i++) {
             if (i < temp.length - 1) {
@@ -81,8 +86,7 @@ function readSingleFile(evt) {
   } else { 
     alert("Failed to load file");
   }
-
-
 }
 
+//event listener for file input
 document.getElementById('fileinput').addEventListener('change', readSingleFile, false);
