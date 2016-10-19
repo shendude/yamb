@@ -6,6 +6,8 @@ var myFilter = function(string) {
 }
 var freqs = {};
 var totals = {};
+var myCards = {};
+
 // var parseObj = function(obj, totals) {
 //   var result = [];
 //   for (var a in obj) {
@@ -28,6 +30,21 @@ var totals = {};
 //   return result;
 // }
 
+var parseCards = function() {
+  var result = {};
+  var first = ''
+  for (var card of cards) {
+    var arr = card.split(' ');
+    arr[0] = arr[0].toLowerCase();
+    if (!result[arr[0]]) {
+      result[arr[0]] = [];
+    }
+    result[arr[0]].push(arr);
+  }
+  myCards = result;
+}
+
+
 //turns blob of text into into array of sentences
 var parseBlob = function(string) {
   var rows = string.split(/\r?\n/g);
@@ -46,7 +63,7 @@ var parseBlob = function(string) {
   for (var line of rows) {
     line = line.split('"').join('');
     if (myFilter(line)) {
-      var temp = line.slice(5).split('. ');
+      var temp = line.slice(5).split(/(?!Dr|Mr|Mrs|Miss|Master)\. /);
       for (var i = 0; i < temp.length; i++) {
         if (i < temp.length - 1) {
           add(temp[i] + '.');
@@ -86,8 +103,5 @@ var parseLines = function(lines) {
       }
     }
   }
-  console.log(freqs);
-  console.log(totals);
-  //console.log(parseObj(freqs, totals));
-  //FIXME
+  parseCards();
 }

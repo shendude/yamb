@@ -9,14 +9,16 @@
     
     <script src='./app.js'></script>
     <script src='./parser.js'></script>
+    <script src='./bot.js'></script>
+    <script src='./cards.js'></script>
   </head>
-  <body ng-app='app'>
+  <body ng-app='app' ng-controller="appCtrl">
     <h1>Yet Another Markov Bot</h1>
-    <div ng-controller="appCtrl">
-      {{test}}
+    <div>
       <input type="file" id="file" name="file"/>
       <button ng-click="add()">SUBMIT</button>
       <button ng-click="generate()">GENERATE</button>
     </div>
+    {{status}}
   </body>
 </html>
