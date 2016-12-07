@@ -6,7 +6,7 @@ basic features:
  * parse sherlock holmes
  * cards against humanity suffixes
 
-advanced features:
+planned features:
  * loading screen messages
  * a live interface to visualize markov chaining
  * deployment
